@@ -159,8 +159,16 @@ function isDateInPeriod(date, period) {
  * '1999-01-05T02:20:00.000Z' => '1/5/1999, 2:20:00 AM'
  * '2010-12-15T22:59:00.000Z' => '12/15/2010, 10:59:00 PM'
  */
-function formatDate(/* date */) {
-  throw new Error('Not implemented');
+function formatDate(date) {
+  return Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    timeZone: 'UTC',
+  }).format(new Date(date));
 }
 
 /**
@@ -175,8 +183,13 @@ function formatDate(/* date */) {
  * 12, 2023 => 10
  * 1, 2024 => 8
  */
-function getCountWeekendsInMonth(/* month, year */) {
-  throw new Error('Not implemented');
+function getCountWeekendsInMonth(month, year) {
+  let counter = 0;
+  for (let day = 1; day <= getCountDaysInMonth(month, year); day += 1) {
+    const dayName = getDayName(new Date(year, month - 1, day));
+    if (dayName === 'Saturday' || dayName === 'Sunday') counter += 1;
+  }
+  return counter;
 }
 
 /**
@@ -207,9 +220,16 @@ function getWeekNumberByDate(/* date */) {
  * Date(2024, 0, 13) => Date(2024, 8, 13)
  * Date(2023, 1, 1) => Date(2023, 9, 13)
  */
-function getNextFridayThe13th(/* date */) {
-  throw new Error('Not implemented');
+function getNextFridayThe13th(date) {
+  let nextThe13th = new Date(date.getTime() + 1000 * 60 * 60 * 24);
+  while (getDayName(nextThe13th) !== 'Friday' && nextThe13th.getDate() === 13) {
+    nextThe13th = new Date(nextThe13th.getTime() + 1000 * 60 * 60 * 24);
+  }
+  console.log(nextThe13th.toDateString());
+  return nextThe13th;
 }
+
+getNextFridayThe13th(new Date(2024, 0, 1));
 
 /**
  * Returns the quarter of the year for a given date.
